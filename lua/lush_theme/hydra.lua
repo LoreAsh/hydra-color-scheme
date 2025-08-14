@@ -48,9 +48,9 @@ local hsl = lush.hsl
 local red = hsl(10, 70, 55)
 local green = hsl(120, 40, 65)
 local teal = hsl(175, 60, 65)
-local blue = hsl(200, 70, 50)
-local yellow = hsl(40, 65, 65)
-local paleYellow = hsl(40, 55, 75)
+local blue = hsl(195, 75, 50)
+local yellow = hsl(35, 85, 65)
+local paleYellow = hsl(40, 90, 80)
 
 -- LSP/Linters mistakenly show `undefined global` errors in the spec, they may
 -- support an annotation like the following. Consult your server documentation.
@@ -58,13 +58,6 @@ local paleYellow = hsl(40, 55, 75)
 local theme = lush(function(injected_functions)
 	local sym = injected_functions.sym
 	return {
-		-- The following are the Neovim (as of 0.8.0-dev+100-g371dfb174) highlight
-		-- groups, mostly used for styling UI elements.
-		-- Comment them out and add your own properties to override the defaults.
-		-- An empty definition `{}` will clear all styling, leaving elements looking
-		-- like the 'Normal' group.
-		-- To be able to link to a group, it must already be defined, so you may have
-		-- to reorder items as you go.
 		--
 		-- See :h highlight-groups
 		--
@@ -96,7 +89,7 @@ local theme = lush(function(injected_functions)
 		-- CursorLineNr   { }, -- Like LineNr when 'cursorline' or 'relativenumber' is set for the cursor line.
 		-- CursorLineFold { }, -- Like FoldColumn when 'cursorline' is set for the cursor line
 		-- CursorLineSign { }, -- Like SignColumn when 'cursorline' is set for the cursor line
-		-- MatchParen     { }, -- Character under the cursor or just before it, if it is a paired bracket, and its match. |pi_paren.txt|
+		MatchParen     { fg = red.li(20), bold = true }, -- Character under the cursor or just before it, if it is a paired bracket, and its match. |pi_paren.txt|
 		-- ModeMsg        { }, -- 'showmode' message (e.g., "-- INSERT -- ")
 		-- MsgArea        { }, -- Area for messages and cmdline
 		-- MsgSeparator   { }, -- Separator for scrolled messages, `msgsep` flag of 'display'
@@ -142,20 +135,20 @@ local theme = lush(function(injected_functions)
 		-- by default.
 		--
 		-- See :h group-name
-		--
-		-- Uncomment and edit if you want more specific syntax highlighting.
 
 		Comment        { fg = Normal.fg.li(-40)}, -- Any comment
 
-		Constant       { fg = yellow }, -- (*) Any constant
-		String         { fg = paleYellow}, --   A string constant: "this is a string"
+		Constant       { fg = paleYellow }, -- (*) Any constant
+		String         { fg = paleYellow }, --   A string constant: "this is a string"
 		-- Character      { }, --   A character constant: 'c', '\n'
 		-- Number         { }, --   A number constant: 234, 0xff
 		-- Boolean        { }, --   A boolean constant: TRUE, false
 		-- Float          { }, --   A floating point constant: 2.3e10
 
 		Identifier     { fg = green }, -- (*) Any variable name
-		Function       { fg = teal , bold = true }, --   Function name (also: methods for classes)
+		-- FieldIdentifier { fg = blue },
+		-- Field_Identifier { fg = yellow },
+		Function       { fg = blue.li(30).sa(30), bold = true }, --   Function name (also: methods for classes)
 
 		Statement      { fg = red, bold = true }, -- (*) Any statement
 		-- Conditional    { fg = red, bold = true }, --   if, then, else, endif, switch, etc.
@@ -171,12 +164,12 @@ local theme = lush(function(injected_functions)
 		-- Macro          { }, --   Same as Define
 		-- PreCondit      { }, --   Preprocessor #if, #else, #endif, etc.
 
-		Type           { fg = yellow }, -- (*) int, long, char, etc.
+		Type           { fg = yellow, bold = true }, -- (*) int, long, char, etc.
 		-- StorageClass   { }, --   static, register, volatile, etc.
-		-- Structure      { }, --   struct, union, enum, etc.
+		Structure      { fg = yellow, bold = true }, --   struct, union, enum, etc.
 		-- Typedef        { }, --   A typedef
 
-		-- Special        { fg = Identifier.fg }, -- (*) Any special symbol
+		Special        { fg = red }, -- (*) Any special symbol
 		-- SpecialChar    { }, --   Special character in a constant
 		-- Tag            { fg = Constant.fg }, --   You can use CTRL-] on this
 		Delimiter      { fg = Normal.fg }, --   Character that needs attention
@@ -187,6 +180,30 @@ local theme = lush(function(injected_functions)
 		-- Ignore         { }, -- Left blank, hidden |hl-Ignore| (NOTE: May be invisible here in template)
 		-- Error          { }, -- Any erroneous construct
 		-- Todo           { }, -- Anything that needs extra attention; mostly the keywords TODO FIXME and XXX
+
+		-- HTML/CSS
+		HtmlTagName { fg = red, bold = true },
+		HtmlTag { fg = Normal.fg },
+		HtmlEndTag { fg = Normal.fg },
+		HtmlArg { fg = blue },
+		TsxAttrib { fg = blue },
+		TypescriptBraces { fg = Normal.fg },
+		TypescriptIdentifierName { fg = green, bold = true },
+		TypescriptTypeBlock { fg = green, bold = true },
+		TypescriptVariable { fg = yellow, bold = true },
+		TypescriptObjectSpread { fg = yellow },
+		TypescriptDefaultImportName { fg = yellow, bold = true },
+		TsxEscapeJs { fg = green },
+		CssDefinition { fg = green },
+		CssCustomProp { fg = green },
+		CssUnitDecorators { fg = red },
+		CssFunctionName { fg = blue },
+		CssPseudoClass { fg = blue },
+		CssBraces { fg = yellow },
+
+		-- Lazy
+		LazyNormal { bg = Normal.bg.da(10) },
+		LazyBackdrop { bg = Normal.bg.da(10) },
 
 		-- These groups are for the native LSP client and diagnostic system. Some
 		-- other LSP clients may use these groups, or use their own. Consult your
@@ -252,8 +269,8 @@ local theme = lush(function(injected_functions)
 		-- sym"@text.uri"          { }, -- Underlined
 		-- sym"@text.underline"    { }, -- Underlined
 		-- sym"@text.todo"         { }, -- Todo
-		-- sym"@comment"           { }, -- Comment
-		-- sym"@punctuation"       { }, -- Delimiter
+		sym"@comment"           { fg = Comment.fg }, -- Comment
+		sym"@punctuation"       { fg = red }, -- Delimiter
 		-- sym"@constant"          { }, -- Constant
 		-- sym"@constant.builtin"  { }, -- Special
 		-- sym"@constant.macro"    { }, -- Define
@@ -267,23 +284,23 @@ local theme = lush(function(injected_functions)
 		-- sym"@number"            { }, -- Number
 		-- sym"@boolean"           { }, -- Boolean
 		-- sym"@float"             { }, -- Float
-		-- sym"@function"          { }, -- Function
+		sym"@function"          { fg = blue, bold = true }, -- Function
 		-- sym"@function.builtin"  { }, -- Special
 		-- sym"@function.macro"    { }, -- Macro
 		-- sym"@parameter"         { }, -- Identifier
-		-- sym"@method"            { }, -- Function
-		-- sym"@field"             { }, -- Identifier
+		sym"@method"            { fg = blue }, -- Function
+		sym"@field"             { fg = yellow }, -- Identifier
 		-- sym"@property"          { }, -- Identifier
-		-- sym"@constructor"       { }, -- Special
+		sym"@constructor"       { fg = red }, -- Special
 		-- sym"@conditional"       { }, -- Conditional
 		-- sym"@repeat"            { }, -- Repeat
 		-- sym"@label"             { }, -- Label
 		-- sym"@operator"          { }, -- Operator
 		-- sym"@keyword"           { }, -- Keyword
 		-- sym"@exception"         { }, -- Exception
-		-- sym"@variable"          { }, -- Identifier
-		-- sym"@type"              { }, -- Type
-		-- sym"@type.definition"   { }, -- Typedef
+		sym"@variable"          { fg = green }, -- Identifier
+		sym"@type"              { fg = yellow }, -- Type
+		sym"@type.definition"   { fg = yellow, bold = true }, -- Typedef
 		-- sym"@storageclass"      { }, -- StorageClass
 		-- sym"@structure"         { }, -- Structure
 		-- sym"@namespace"         { }, -- Identifier
