@@ -45,12 +45,13 @@
 local lush = require('lush')
 local hsl = lush.hsl
 
-local red = hsl(10, 70, 55)
-local green = hsl(120, 40, 65)
+local red = hsl(10, 85, 62)
+local green = hsl(120, 46, 68)
 local teal = hsl(175, 60, 65)
-local blue = hsl(195, 75, 50)
-local yellow = hsl(35, 85, 65)
-local paleYellow = hsl(40, 90, 80)
+local blue = hsl(195, 90, 50)
+local lightBlue = blue.de(30).li(30)
+local yellow = hsl(35, 100, 70)
+local paleYellow = hsl(40, 100, 80)
 
 -- LSP/Linters mistakenly show `undefined global` errors in the spec, they may
 -- support an annotation like the following. Consult your server documentation.
@@ -61,7 +62,7 @@ local theme = lush(function(injected_functions)
 		--
 		-- See :h highlight-groups
 		--
-		Normal         { bg = hsl(190, 35, 18), fg = hsl(190, 20, 85) }, -- Normal text
+		Normal         { bg = hsl(182, 53, 19), fg = hsl(190, 20, 85) }, -- Normal text
 		LineNr         { fg = Normal.fg.li(-40) }, -- Line number for ":number" and ":#" commands, and when 'number' or 'relativenumber' option is set.
 		-- ColorColumn    { }, -- Columns set with 'colorcolumn'
 		Conceal        { fg = Normal.fg.li(-50) }, -- Placeholder characters substituted for concealed text (see 'conceallevel')
@@ -70,8 +71,9 @@ local theme = lush(function(injected_functions)
 		-- lCursor        { }, -- Character under the cursor when |language-mapping| is used (see 'guicursor')
 		-- CursorIM       { }, -- Like Cursor, but used when in IME mode |CursorIM|
 		-- CursorColumn   { }, -- Screen-column at the cursor, when 'cursorcolumn' is set.
-		-- CursorLine     { }, -- Screen-line at the cursor, when 'cursorline' is set. Low-priority if foreground (ctermfg OR guifg) is not set.
-		-- Directory      { }, -- Directory names (and other special names in listings)
+		 CursorLine     { bg = hsl(223, 5, 20) }, -- Screen-line at the cursor, when 'cursorline' is set. Low-priority if foreground (ctermfg OR guifg) is not set.
+		 Directory      { fg = blue }, -- Directory names (and other special names in listings)
+		 netrwClassify  { fg = green },
 		-- DiffAdd        { }, -- Diff mode: Added line |diff.txt|
 		-- DiffChange     { }, -- Diff mode: Changed line |diff.txt|
 		-- DiffDelete     { }, -- Diff mode: Deleted line |diff.txt|
@@ -148,7 +150,7 @@ local theme = lush(function(injected_functions)
 		Identifier     { fg = green }, -- (*) Any variable name
 		-- FieldIdentifier { fg = blue },
 		-- Field_Identifier { fg = yellow },
-		Function       { fg = blue.li(30).sa(30), bold = true }, --   Function name (also: methods for classes)
+		Function       { fg = blue, bold = true }, --   Function name (also: methods for classes)
 
 		Statement      { fg = red, bold = true }, -- (*) Any statement
 		-- Conditional    { fg = red, bold = true }, --   if, then, else, endif, switch, etc.
@@ -193,17 +195,21 @@ local theme = lush(function(injected_functions)
 		TypescriptVariable { fg = yellow, bold = true },
 		TypescriptObjectSpread { fg = yellow },
 		TypescriptDefaultImportName { fg = yellow, bold = true },
+		TypescriptProp { fg = blue },
 		TsxEscapeJs { fg = green },
 		CssDefinition { fg = green },
 		CssCustomProp { fg = green },
 		CssUnitDecorators { fg = red },
-		CssFunctionName { fg = blue },
+		CssFunctionName { fg = lightBlue },
 		CssPseudoClass { fg = blue },
 		CssBraces { fg = yellow },
 
 		-- Lazy
 		LazyNormal { bg = Normal.bg.da(10) },
 		LazyBackdrop { bg = Normal.bg.da(10) },
+
+		-- Ibl Indent
+		IblIndent { fg = Comment.fg.da(30).de(40) }, 
 
 		-- These groups are for the native LSP client and diagnostic system. Some
 		-- other LSP clients may use these groups, or use their own. Consult your
@@ -308,6 +314,13 @@ local theme = lush(function(injected_functions)
 		-- sym"@preproc"           { }, -- PreProc
 		-- sym"@debug"             { }, -- Debug
 		-- sym"@tag"               { }, -- Tag
+
+		-- Typescript
+		sym"@lsp.type.member.typescriptreact" { fg = blue },
+		sym"@lsp.type.member.typescript" { fg = blue },
+		sym"@lsp.mod.declaration.typescriptreact" { fg = yellow, bold = true },
+		sym"@lsp.typemod.variable.declaration.typescriptreact" { fg = green },
+		sym"@lsp.typemod.function.declaration.typescriptreact" { fg = blue, bold = true },
 	}
 end)
 
